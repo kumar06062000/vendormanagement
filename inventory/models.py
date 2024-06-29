@@ -36,7 +36,7 @@ class Product(models.Model):
     description = models.TextField()
     similar_products = models.ManyToManyField('self', blank=True)
     document = models.FileField(upload_to='product_documents/', blank=True, null=True)
-    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  # Added this line
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  
 
     def __str__(self):
         return self.name
