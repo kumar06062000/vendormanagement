@@ -1,0 +1,96 @@
+/* static/css/styles.css */
+
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box-shadow for depth */
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #0056b3;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-links.right {
+    margin-left: auto;
+}
+
+.nav-links.left {
+    margin-right: auto;
+}
+
+/* Login and Register links styling */
+.nav-links.right a {
+    padding: 10px 20px; /* Adjust padding for larger clickable area */
+}
+
+/* Logout form styling */
+.logout-form {
+    margin-left: 10px;
+}
+
+.logout-form button {
+    padding: 8px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-form button:hover {
+    background-color: #c82333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Stack items vertically on small screens */
+        padding: 10px; /* Reduce padding for compactness */
+    }
+
+    .nav-links {
+        gap: 10px; /* Adjust gap for smaller screens */
+    }
+
+    .nav-links.left, .nav-links.right {
+        margin: 0; /* Remove auto margin to center on smaller screens */
+        width: 100%; /* Full width on smaller screens */
+        justify-content: center; /* Center items */
+    }
+
+    .logout-form {
+        margin: 10px 0 0; /* Adjust margin for spacing */
+    }
+
+    .logout-form button {
+        width: 100%; /* Full width button on small screens */
+    }
+}

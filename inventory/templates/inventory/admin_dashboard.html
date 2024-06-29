@@ -1,0 +1,109 @@
+<!-- templates/inventory/admin_dashboard.html -->
+
+{% extends 'inventory/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        margin-top: 20px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
+
+    li h3 {
+        font-size: 1.2em;
+        margin: 0;
+        color: #333;
+    }
+
+    li p {
+        color: #666;
+        font-size: 1em;
+        margin: 10px 0;
+    }
+
+    li a {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-right: 10px;
+        transition: background-color 0.3s;
+    }
+
+    li a:hover {
+        background-color: #0056b3;
+    }
+
+    .add-link {
+        display: block;
+        margin-top: 20px;
+        font-size: 1.2em;
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .add-link:hover {
+        background-color: #218838;
+    }
+</style>
+
+<div class="container">
+    <h1>Admin Dashboard</h1>
+    <h2>All Vendors</h2>
+    <ul>
+        {% for vendor in vendors %}
+            <li>
+                <h3>{{ vendor.company_name }}</h3>
+                <p>{{ vendor.description }}</p>
+                <a href="{% url 'edit_vendor' vendor.id %}">Edit</a>
+                <a href="{% url 'delete_vendor' vendor.id %}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a class="add-link" href="{% url 'add_vendor' %}">Add New Vendor</a>
+</div>
+{% endblock %}

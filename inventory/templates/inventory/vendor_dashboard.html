@@ -1,0 +1,115 @@
+<!-- templates/inventory/vendor_dashboard.html -->
+
+{% extends 'inventory/base.html' %}
+
+{% block title %}Vendor Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    li:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+        font-size: 1.2em;
+        margin-bottom: 5px;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+
+    .product-actions {
+        margin-top: 10px;
+    }
+
+    .product-actions a {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-right: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .product-actions a:hover {
+        background-color: #0056b3;
+    }
+
+    .add-product {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+
+    .add-product:hover {
+        background-color: #218838;
+    }
+</style>
+
+<div class="container">
+    <h1>Welcome, {{ vendor.user.username }}</h1>
+    <h2>Your Products</h2>
+    <ul>
+        {% for product in products %}
+            <li>
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                <p>Price: {{ product.price }}</p>
+                <div class="product-actions">
+                    <a href="{% url 'edit_product' product.id %}">Edit</a>
+                    <a href="{% url 'delete_product' product.id %}">Delete</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <a class="add-product" href="{% url 'add_product' %}">Add New Product</a>
+</div>
+{% endblock %}
