@@ -192,7 +192,7 @@ def view_wishlist(request):
 
 @login_required
 def generate_pdf_report(request):
-    # Logic to generate PDF report
+    
     pdf = generate_pdf()
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
@@ -200,7 +200,7 @@ def generate_pdf_report(request):
 
 @login_required
 def generate_excel_report(request):
-    # Logic to generate Excel report
+    
     products = Product.objects.all()
     df = pd.DataFrame(list(products.values()))
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -211,7 +211,7 @@ def generate_excel_report(request):
 @login_required
 def update_notification_preference(request):
     if request.method == 'POST':
-        # Logic to update notification preferences
+        
         messages.success(request, 'Notification preferences updated successfully.')
         return redirect('home')
     return render(request, 'inventory/update_notification_preference.html')
@@ -219,7 +219,7 @@ def update_notification_preference(request):
 @login_required
 def set_review_interval(request):
     if request.method == 'POST':
-        # Logic to set review interval
+        
         messages.success(request, 'Review interval set successfully.')
         return redirect('home')
     return render(request, 'inventory/set_review_interval.html')
