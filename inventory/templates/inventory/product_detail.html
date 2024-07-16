@@ -1,158 +1,93 @@
-<!-- inventory/templates/inventory/product_detail.html -->
-
 {% extends "inventory/base.html" %}
-
-{% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f2f5;
-        color: #333;
-        margin: 0;
-        padding: 0;
-    }
-
-    .container {
-        max-width: 800px;
-        margin: 20px auto;
+    .product-detail {
+        max-width: 500px; 
+        margin: 0 auto;
         padding: 20px;
-        background-color: white;
+        background-color: #fff;
         border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        min-height: 700px; 
     }
-
-    h1 {
-        font-size: 2em;
-        margin-bottom: 10px;
-    }
-
-    p {
-        margin-bottom: 10px;
-    }
-
-    .document-link {
-        display: inline-block;
-        margin-top: 5px;
-    }
-
-    .vendor-info {
-        margin-top: 20px;
-    }
-
-    .comments-section,
-    .ratings-section {
-        margin-top: 20px;
-    }
-
-    .comments-section h2,
-    .ratings-section h2 {
-        margin-bottom: 10px;
-    }
-
-    .comments-list,
-    .ratings-list {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .comments-list li,
-    .ratings-list li {
-        margin-bottom: 10px;
-    }
-
-    .add-form {
-        margin-top: 20px;
-    }
-
-    .add-form form {
-        margin-top: 10px;
-    }
-
-    .add-form form button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .add-form form button:hover {
-        background-color: #0056b3;
-    }
-
-    .login-message {
-        margin-top: 20px;
-    }
-
-    .product-image {
+    .product-detail img {
         max-width: 100%;
         height: auto;
+        border-radius: 8px;
+    }
+    .product-detail h1 {
+        font-size: 2em;
         margin-bottom: 20px;
+    }
+    .product-detail p {
+        margin: 10px 0;
+    }
+    .product-detail form {
+        margin-top: 20px;
+    }
+    .product-detail h2 {
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .product-detail h3 {
+        margin-top: 20px;
+        margin-bottom: 10px;
     }
 </style>
 
-<div class="container">
+<div class="product-detail">
     <h1>{{ product.name }}</h1>
-    {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-    {% endif %}
     <p>{{ product.description }}</p>
-    <p>Price: {{ product.price }}</p>
-    {% if product.document %}
-        <p>Document: <a href="{{ product.document.url }}" class="document-link">Download</a></p>
-    {% endif %}
-
-    <div class="vendor-info">
-        <h2>Vendor Information</h2>
-        <p>Vendor: {{ product.vendor.company_name }}</p>
-        {% if product.vendor.company_website %}
-            <p>Website: <a href="{{ product.vendor.company_website }}" target="_blank">{{ product.vendor.company_website }}</a></p>
-        {% endif %}
-    </div>
-
-    <div class="comments-section">
-        <h2>Comments</h2>
-        <ul class="comments-list">
-            {% for comment in comments %}
-                <li>{{ comment.user.username }}: {{ comment.text }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="ratings-section">
-        <h2>Ratings</h2>
-        <ul class="ratings-list">
-            {% for rating in ratings %}
-                <li>{{ rating.user.username }}: {{ rating.rating }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <hr>
+    <p>Price: ${{ product.price }}</p>
+    <img src="{{ product.image.url }}" alt="{{ product.name }}">
 
     {% if user.is_authenticated %}
-        <div class="add-form">
-            <h2>Add Comment</h2>
-            <form method="post" action="{% url 'add_comment' product_id=product.id %}">
+        {% if is_wished %}
+            <form action="{% url 'remove_from_wishlist' product.id %}" method="post">
                 {% csrf_token %}
-                {{ comment_form.as_p }}
-                <button type="submit">Add Comment</button>
+                <button type="submit">Remove from Wishlist</button>
             </form>
+        {% else %}
+            <form action="{% url 'add_to_wishlist' product.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Add to Wishlist</button>
+            </form>
+        {% endif %}
+    {% endif %}
 
-            <h2>Add Rating</h2>
-            <form method="post" action="{% url 'add_rating' product_id=product.id %}">
-                {% csrf_token %}
-                {{ rating_form.as_p }}
-                <button type="submit">Add Rating</button>
-            </form>
-        </div>
-    {% else %}
-        <p class="login-message">Please <a href="{% url 'login' %}">login</a> to add a comment or rating.</p>
+    <h2>Comments</h2>
+    {% for comment in comments %}
+        <p>{{ comment.user.username }}: {{ comment.text }}</p>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <h3>Add a Comment</h3>
+        <form action="{% url 'add_comment' product.id %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Comment</button>
+        </form>
+    {% endif %}
+
+    <h2>Ratings</h2>
+    {% for rating in ratings %}
+        <p>{{ rating.user.username }}: {{ rating.rating }} stars</p>
+    {% empty %}
+        <p>No ratings yet.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <h3>Add a Rating</h3>
+        <form action="{% url 'add_rating' product.id %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Rating</button>
+        </form>
     {% endif %}
 </div>
+
 {% endblock %}
