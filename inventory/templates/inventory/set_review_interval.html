@@ -1,0 +1,12 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Set Review Interval</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Set Interval</button>
+  </form>
+  <a href="{% url 'home' %}">Back to Home</a>
+{% endblock %}
