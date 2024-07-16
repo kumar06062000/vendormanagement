@@ -25,6 +25,8 @@ class Vendor(models.Model):
     cloud = models.CharField(max_length=255)
     additional_information = models.TextField(blank=True, null=True)
     document = models.FileField(upload_to='documents/', blank=True, null=True)
+    review_interval_days = models.PositiveIntegerField(default=90)  # Added this field
+    notification_preferences = models.JSONField(default=dict)  # Added this field
 
     def __str__(self):
         return self.company_name
@@ -36,7 +38,7 @@ class Product(models.Model):
     description = models.TextField()
     similar_products = models.ManyToManyField('self', blank=True)
     document = models.FileField(upload_to='product_documents/', blank=True, null=True)
-    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -58,3 +60,31 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'Rating by {self.user.username} on {self.product.name}'
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='wishlist')
+
+    class Meta:
+        unique_together = ('user', 'product')
+
+    def __str__(self):
+        return f'{self.user.username} - {self.product.name}'
+
+class ReportRequest(models.Model):
+    REPORT_TYPES = [
+        ('pdf', 'PDF'),
+        ('excel', 'Excel'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    report_type = models.CharField(max_length=10, choices=REPORT_TYPES)
+    requested_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+    file = models.FileField(upload_to='reports/', null=True, blank=True)
+
+    def __str__(self):
+        return f'Report {self.report_type} for {self.user.username}'
+
+
+    
