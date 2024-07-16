@@ -1,19 +1,69 @@
-<!-- templates/inventory/base.html -->
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Vendor Inventory{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .navbar {
+            background-color: #007bff;
+            overflow: hidden;
+        }
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-nav li {
+            margin: 0;
+        }
+        .navbar-nav li a, .navbar-nav li form button {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar-nav li a:hover, .navbar-nav li form button:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        main {
+            padding: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f1f1f1;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
+        <nav class="navbar">
+            <ul class="navbar-nav">
                 <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'products' %}">Products</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'view_wishlist' %}">Wishlist</a></li>
                     {% if user.is_staff %}
                         <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
                     {% elif user.vendor_profile %}
