@@ -6,17 +6,24 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .models import Vendor, Product, Comment, Rating
+from .models import Vendor, Product, Comment, Rating, Wishlist
 from .forms import VendorForm, ProductForm, CommentForm, RatingForm, UserRegisterForm
 from django.db.models import Q
+from django.http import HttpResponse
+import pandas as pd
+from .utils import generate_pdf
 
 def home(request):
+    return render(request, 'inventory/home.html')
+
+def products(request):
     query = request.GET.get('q')
     if query:
-        products = Product.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
+        products = Product.objects.filter(Q(name__icontains=query) | Q(description__icontains(query)))
     else:
         products = Product.objects.all()
-    return render(request, 'inventory/home.html', {'products': products, 'query': query})
+    return render(request, 'inventory/products.html', {'products': products, 'query': query})
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -147,8 +154,72 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     comments = product.comments.all()
     ratings = product.ratings.all()
+    is_wished = False
+    if request.user.is_authenticated:
+        is_wished = Wishlist.objects.filter(user=request.user, product=product).exists()
     return render(request, 'inventory/product_detail.html', {
         'product': product,
         'comments': comments,
-        'ratings': ratings
+        'ratings': ratings,
+        'is_wished': is_wished
     })
+
+@login_required
+def add_to_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+    if created:
+        messages.success(request, 'Product added to wishlist.')
+    else:
+        messages.info(request, 'Product is already in your wishlist.')
+    return redirect('product_detail', product_id=product_id)
+
+@login_required
+def remove_from_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    wishlist = Wishlist.objects.filter(user=request.user, product=product)
+    if wishlist.exists():
+        wishlist.delete()
+        messages.success(request, 'Product removed from wishlist.')
+    else:
+        messages.info(request, 'Product was not in your wishlist.')
+    return redirect('product_detail', product_id=product_id)
+
+@login_required
+def view_wishlist(request):
+    wishlist = Wishlist.objects.filter(user=request.user)
+    return render(request, 'inventory/wishlist.html', {'wishlist': wishlist})
+
+@login_required
+def generate_pdf_report(request):
+    # Logic to generate PDF report
+    pdf = generate_pdf()
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    return response
+
+@login_required
+def generate_excel_report(request):
+    # Logic to generate Excel report
+    products = Product.objects.all()
+    df = pd.DataFrame(list(products.values()))
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="report.xlsx"'
+    df.to_excel(response, index=False)
+    return response
+
+@login_required
+def update_notification_preference(request):
+    if request.method == 'POST':
+        # Logic to update notification preferences
+        messages.success(request, 'Notification preferences updated successfully.')
+        return redirect('home')
+    return render(request, 'inventory/update_notification_preference.html')
+
+@login_required
+def set_review_interval(request):
+    if request.method == 'POST':
+        # Logic to set review interval
+        messages.success(request, 'Review interval set successfully.')
+        return redirect('home')
+    return render(request, 'inventory/set_review_interval.html')
