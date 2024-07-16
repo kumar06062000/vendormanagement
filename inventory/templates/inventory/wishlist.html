@@ -1,0 +1,37 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Wishlist{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+    }
+</style>
+
+<div class="container">
+    <h1>Wishlist</h1>
+    <ul>
+        {% for item in wishlist %}
+        <li>
+            {{ item.product.name }}  
+            <form method="post" action="{% url 'remove_from_wishlist' item.id %}">
+                {% csrf_token %}
+                <button type="submit">Remove</button>
+            </form>
+        </li>
+        {% empty %}
+        <li>No products in your wishlist.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
