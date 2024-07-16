@@ -25,8 +25,8 @@ class Vendor(models.Model):
     cloud = models.CharField(max_length=255)
     additional_information = models.TextField(blank=True, null=True)
     document = models.FileField(upload_to='documents/', blank=True, null=True)
-    review_interval_days = models.PositiveIntegerField(default=90)  # Added this field
-    notification_preferences = models.JSONField(default=dict)  # Added this field
+    review_interval_days = models.PositiveIntegerField(default=90)  
+    notification_preferences = models.JSONField(default=dict)  
 
     def __str__(self):
         return self.company_name
