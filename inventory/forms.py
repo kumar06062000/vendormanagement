@@ -1,5 +1,3 @@
-# inventory/forms.py
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -35,3 +33,16 @@ class RatingForm(forms.ModelForm):
     class Meta:
         model = Rating
         fields = ['rating']
+
+class NotificationPreferenceForm(forms.ModelForm):
+    class Meta:
+        model = Vendor
+        fields = ['notification_preferences']
+
+class ReviewIntervalForm(forms.ModelForm):
+    class Meta:
+        model = Vendor
+        fields = ['review_interval_days']
+        widgets = {
+            'review_interval_days': forms.NumberInput(attrs={'min': 1}),
+        }
